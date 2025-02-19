@@ -21,8 +21,9 @@ We use **Pygame** for visualization, **PyTorch** for deep learning, and a physic
 ---
 
 # Final Objective  
-The ultimate goal is to create an agent capable of computing the **optimal trajectory** between Earth and a target planet while considering the gravitational influences of celestial bodies.  
-This could have practical applications in **automated space mission planning**.
+The ultimate goal is to create an agent capable of computing the **optimal trajectory** between Earth and a target planet while considering the gravitational influences of celestial bodies. For now, I am working on a more accessible version of the problem to fully grasp its complexities and tackle it step by step.
+
+In this simplified version, the planets are fixed, and we are only aiming for Mars. But the ambition is to extend the algorithm to a dynamic system, enabling automated space missions to be planned in any planetary configuration.
 
 ---
 
