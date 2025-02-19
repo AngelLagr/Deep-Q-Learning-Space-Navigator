@@ -12,7 +12,7 @@ We use **Pygame** for visualization, **PyTorch** for deep learning, and a physic
 
 ---
 
-## Project Structure  
+# Project Structure  
 - **`train.py`**: Contains the training process using Deep Q-Learning.  
 - **`model.pth`**: File storing the trained model weights.  
 - **`load_model.py`**: Script to load a trained model and run a simulation.  
@@ -20,13 +20,13 @@ We use **Pygame** for visualization, **PyTorch** for deep learning, and a physic
 
 ---
 
-## Final Objective  
+# Final Objective  
 The ultimate goal is to create an agent capable of computing the **optimal trajectory** between Earth and a target planet while considering the gravitational influences of celestial bodies.  
 This could have practical applications in **automated space mission planning**.
 
 ---
 
-## Technologies Used  
+# Technologies Used  
 - **Python**  
 - **Pygame** (visualization)  
 - **PyTorch** (Deep Q-Learning)  
@@ -34,11 +34,17 @@ This could have practical applications in **automated space mission planning**.
 
 ---
 
-## Execution  
+# Execution  
 To train the model:  
 ```bash
 python train.py
+```
 
 To load your model and test it:
 ```bash
+python load_model.py
+```
+
+# Results
+![performance](performance.png)
 python load_model.py
