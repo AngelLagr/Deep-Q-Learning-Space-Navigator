@@ -46,4 +46,3 @@ python load_model.py
 
 # Results
 ![performance](performance.png)
-python load_model.py
