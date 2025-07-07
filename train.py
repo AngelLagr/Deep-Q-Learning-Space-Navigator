@@ -50,10 +50,10 @@ class Planet:
         distance_x = other_x - self.x
         distance_y = other_y - self.y
         distance = math.sqrt(distance_x ** 2 + distance_y ** 2)
-      
-        if other.sun :
-      			self.distance_to_sun = distance
-      
+        
+        if other.sun:
+            self.distance_to_sun = distance
+        
         force = G * self.mass * other.mass / distance**2
         theta = math.atan2(distance_y, distance_x)
         force_x = math.cos(theta) * force
@@ -134,7 +134,9 @@ def sample_weighted(memory, batch_size):
     weights = np.exp(exponent * (indices - n + 1))  # Poids exponentiels
     weights /= weights.sum()  # Normaliser pour que la somme des poids soit 1
     # Sélectionner les indices en fonction des probabilités pondérées
-    selected_indices = np.random.choice(n, size=batch_size, replace=False, p=weights)
+
+    rng = np.random.default_rng()
+    selected_indices = rng.choice(n, size=batch_size, replace=False, p=weights)
     return [memory[i] for i in selected_indices]
 
 # Agent DQL
@@ -154,8 +156,9 @@ class DQLAgent:
         self.loss_fn = nn.MSELoss()
 
     def act(self, state):
-        if np.random.rand() <= self.epsilon:
-            return random.randrange(self.action_size)
+        rng = np.random.default_rng()
+        if rng.random() <= self.epsilon:
+            return rng.integers(self.action_size)
         state = torch.FloatTensor(state).unsqueeze(0)
         q_values = self.model(state)
         return torch.argmax(q_values).item()
@@ -222,7 +225,7 @@ def simulate_with_dql():
     plt.ion()
     fig, axis = plt.subplots()
     display(fig)
-    Very_Total_Rewards = []
+    very_TotalRewards = []
     for episode in range(episodes):
         sun = Planet("Soleil", 0, 0, 30, YELLOW, 1.98892 * 10**30)
         mercury = Planet("Mercure", 0.39 * Planet.AU, 0, 8, DARK_GREY, 3.30 * 10**23)
@@ -234,13 +237,11 @@ def simulate_with_dql():
         mars = Planet("Mars", -1.524 * Planet.AU, 0, 12, RED, 6.39 * 10**23)
         mars.y_vel = 24.077 * 1000
         planets = [sun, mercury, venus, earth, mars]
-        planets_target = [mercury, venus, mars]
 
         rockets = []
         states = []
-        #target_planet = planets_target[random.randint(0, len(planets_target) - 1)]
+
         target_planet = mars
-        other_planets = [x for x in planets if x != target_planet]
         
         for i in range(40):
             rocket_aux = Rocket(earth.x, earth.y, earth.x_vel, earth.y_vel)
@@ -252,7 +253,6 @@ def simulate_with_dql():
             
         done = False
         steps = 0
-        total_reward = 0
 
         planet_trajectories = {planet.name: ([], planet.color) for planet in planets}
         rocket_trajectories = [[] for _ in range(len(rockets))]
@@ -299,12 +299,9 @@ def simulate_with_dql():
                 elif dist_to_target  < 1e11:
                     reward = 3
                     all_done = False
-                elif dist_to_target > 3 * Planet.AU:
+                elif dist_to_target > 3 * Planet.AU or steps >= max_steps_per_episode:
                     reward = -1000
                     rockets[i] = None  # Fusée hors-limites
-                elif steps >= max_steps_per_episode:
-                    reward = -1000
-                    rockets[i] = None  # Temps écoulé
                 else:
                     all_done = False  # Il reste des fusées en cours
         
@@ -329,7 +326,7 @@ def simulate_with_dql():
             if all_done:  # Si toutes les fusées ont terminé
                 done = True
                 
-        Very_Total_Rewards.append(sum(total_rewards)/10)
+        very_TotalRewards.append(sum(total_rewards)/10)
         agent.replay()
         scores.append(max(total_rewards))
         mean_score = sum(scores) / len(scores)
@@ -342,7 +339,7 @@ def simulate_with_dql():
         
         axis.clear()
         axis.plot(scores, label="Score")
-        axis.plot(Very_Total_Rewards, label="Total reward", color="purple")
+        axis.plot(very_TotalRewards, label="Total reward", color="purple")
         axis.plot(mean_scores, label="Moyenne globale", color="orange")
         for ep in save_points:
             axis.axvline(x=ep, color='red', linestyle='--', linewidth=1, label='Modèle sauvegardé' if ep == save_points[0] else "")

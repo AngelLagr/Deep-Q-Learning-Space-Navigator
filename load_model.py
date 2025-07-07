@@ -49,10 +49,9 @@ class Planet:
         distance_x = other_x - self.x
         distance_y = other_y - self.y
         distance = math.sqrt(distance_x ** 2 + distance_y ** 2)
-      
         if other.sun :
-      			self.distance_to_sun = distance
-      
+            self.distance_to_sun = distance
+                  
         force = G * self.mass * other.mass / distance**2
         theta = math.atan2(distance_y, distance_x)
         force_x = math.cos(theta) * force
@@ -141,8 +140,9 @@ class DQLAgent:
         self.loss_fn = nn.MSELoss()
 
     def act(self, state):
-        if np.random.rand() <= self.epsilon:
-            return random.randrange(self.action_size)
+        rng = np.random.default_rng()
+        if rng.random() <= self.epsilon:
+            return rng.integers(self.action_size)
         state = torch.FloatTensor(state).unsqueeze(0)
         q_values = self.model(state)
         return torch.argmax(q_values).item()
@@ -216,18 +216,11 @@ def test_trained_agent():
     mars = Planet("Mars", -1.524 * Planet.AU, 0, 12, RED, 6.39 * 10**23)
     mars.y_vel = 24.077 * 1000
     planets = [sun, mercury, venus, earth, mars]
-    planets_target = [mercury, venus, mars]
     target_planet = mars  # Test de la trajectoire vers Mars
     
     rocket = Rocket(earth.x, earth.y, earth.x_vel, earth.y_vel)
-    other_planets = [x for x in planets if x != target_planet]
 
     state = [rocket.x, rocket.y, rocket.vx, rocket.vy, target_planet.x, target_planet.y, target_planet.x_vel, target_planet.y_vel]
-    # for planet in other_planets:
-    #     state.append(planet.x)
-    #     state.append(planet.y)
-    #     state.append(planet.x_vel)
-    #     state.append(planet.y_vel)
         
     done = False
     steps = 0
@@ -256,12 +249,6 @@ def test_trained_agent():
         rocket.update_position(ax + ax_g, ay + ay_g, TIME_STEP)
         
         next_state = [rocket.x, rocket.y, rocket.vx, rocket.vy, target_planet.x, target_planet.y, target_planet.x_vel, target_planet.y_vel]
-        
-        # for planet in other_planets:
-        #     next_state.append(planet.x)
-        #     next_state.append(planet.y)
-        #     next_state.append(planet.x_vel)
-        #     next_state.append(planet.y_vel)
             
         dist_to_target = np.sqrt((rocket.x - target_planet.x)**2 + (rocket.y - target_planet.y)**2)
         if dist_to_target < 1e10 or steps >= max_steps:
