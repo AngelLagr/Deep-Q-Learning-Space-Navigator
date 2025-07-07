@@ -225,7 +225,7 @@ def simulate_with_dql():
     plt.ion()
     fig, axis = plt.subplots()
     display(fig)
-    very_TotalRewards = []
+    very_totalRewards = []
     for episode in range(episodes):
         sun = Planet("Soleil", 0, 0, 30, YELLOW, 1.98892 * 10**30)
         mercury = Planet("Mercure", 0.39 * Planet.AU, 0, 8, DARK_GREY, 3.30 * 10**23)
@@ -326,7 +326,7 @@ def simulate_with_dql():
             if all_done:  # Si toutes les fusées ont terminé
                 done = True
                 
-        very_TotalRewards.append(sum(total_rewards)/10)
+        very_totalRewards.append(sum(total_rewards)/10)
         agent.replay()
         scores.append(max(total_rewards))
         mean_score = sum(scores) / len(scores)
@@ -339,7 +339,7 @@ def simulate_with_dql():
         
         axis.clear()
         axis.plot(scores, label="Score")
-        axis.plot(very_TotalRewards, label="Total reward", color="purple")
+        axis.plot(very_totalRewards, label="Total reward", color="purple")
         axis.plot(mean_scores, label="Moyenne globale", color="orange")
         for ep in save_points:
             axis.axvline(x=ep, color='red', linestyle='--', linewidth=1, label='Modèle sauvegardé' if ep == save_points[0] else "")
